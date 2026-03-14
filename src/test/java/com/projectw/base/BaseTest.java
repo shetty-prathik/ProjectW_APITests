@@ -128,6 +128,17 @@ public abstract class BaseTest {
                 .build();
     }
 
+    /**
+     * Returns a RequestSpecification for multipart requests (e.g. file upload).
+     * Does not set Content-Type so RestAssured can set multipart/form-data when using multiPart().
+     */
+    protected RequestSpecification authSpecForMultipart() {
+        return new RequestSpecBuilder()
+                .addHeader(Constants.HEADER_AUTHORIZATION, Constants.BEARER_PREFIX + adminToken)
+                .addFilter(new AllureRestAssured())
+                .build();
+    }
+
     // ─── Auth Helper ─────────────────────────────────────────────────────────
 
     /**
