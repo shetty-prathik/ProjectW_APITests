@@ -31,6 +31,7 @@ public final class Constants {
     public static final String PRODUCTS         = "/products";
     public static final String PRODUCT_BY_ID    = "/products/{id}";
     public static final String PRODUCTS_SEARCH  = "/products/search";
+    public static final String PRODUCT_DESIGN   = "/products/{id}/design";
 
     // ── Raw Materials ─────────────────────────────────────────────────────────
     public static final String RAW_MATERIALS    = "/rawmaterials";

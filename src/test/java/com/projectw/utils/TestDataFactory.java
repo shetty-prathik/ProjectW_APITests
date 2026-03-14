@@ -285,6 +285,54 @@ public class TestDataFactory {
 
     // ── Product ───────────────────────────────────────────────────────────────
 
+    /** Minimal product for C01: category + name (category required for code generation). */
+    public static Map<String, Object> productMinimalPayload() {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("category", "drills");
+        payload.put("name", "10mm Drill " + faker.number().digits(3));
+        return payload;
+    }
+
+    /** Full product payload with optional fields (C02). */
+    public static Map<String, Object> productFullPayload(List<String> rawMaterialIds, String customerId) {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("category", "endmills");
+        payload.put("name", "12mm 4-Flute End Mill " + faker.number().digits(3));
+        payload.put("description", "HSS cobalt end mill");
+        payload.put("drawing_code", List.of("EM-001", "EM-001-A"));
+        payload.put("type", "standard");
+        payload.put("coating", "TiN");
+        payload.put("material_type", "HSS");
+        payload.put("direction", "right");
+        payload.put("length", 100);
+        payload.put("width", 12);
+        payload.put("diameter", 12);
+        payload.put("subCategory", "flat");
+        payload.put("fluteLength", 40);
+        payload.put("overallLength", 100);
+        payload.put("hsn_code", "8207");
+        payload.put("price", 500);
+        if (rawMaterialIds != null && !rawMaterialIds.isEmpty()) {
+            payload.put("raw_materials", rawMaterialIds);
+        }
+        if (customerId != null && !customerId.isBlank()) {
+            payload.put("customer_id", customerId);
+        }
+        return payload;
+    }
+
+    /** Product with stages array for create (C03). */
+    public static Map<String, Object> productWithStagesPayload() {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("category", "endmills");
+        payload.put("name", "End Mill with Stages " + faker.number().digits(3));
+        payload.put("stages", List.of(
+                Map.of("type", "cutting", "level", 1, "description", "Cut"),
+                Map.of("type", "cnc_grinding", "level", 2, "description", "Finish grinding")
+        ));
+        return payload;
+    }
+
     public static Map<String, Object> productPayload() {
         Map<String, Object> payload = new HashMap<>();
         payload.put("name", "Drill " + faker.number().digits(4));
