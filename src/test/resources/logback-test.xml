@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Logback configuration for the Project W test suite.
+
+  Log level is controlled by the system property "log.level" (default: INFO).
+
+  Normal run (INFO only):
+    mvn test -Dtest=AttendanceTest
+
+  Debug run (full request/response bodies + state IDs):
+    mvn test -Dtest=AttendanceTest "-Dlog.level=DEBUG"
+
+  Note: always quote -D flags that contain dots when using PowerShell.
+-->
+<configuration>
+
+    <!-- Read log level from -Dlog.level=... ; fall back to INFO -->
+    <property name="LOG_LEVEL" value="${log.level:-INFO}"/>
+
+    <!-- ── Console appender ─────────────────────────────────────────────── -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%logger{30}] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ── Rolling file appender — one file per run ─────────────────────── -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>target/test-logs/project-w-tests.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>target/test-logs/project-w-tests.%i.log</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>5</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%logger{36}] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ── Project W test classes — honour LOG_LEVEL ────────────────────── -->
+    <logger name="com.projectw" level="${LOG_LEVEL}" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <!-- ── Third-party noise suppression ────────────────────────────────── -->
+    <!-- REST Assured request/response details are captured by Allure; suppress here -->
+    <logger name="io.restassured"           level="WARN"/>
+    <logger name="org.apache.http"          level="WARN"/>
+    <logger name="groovy.lang"              level="WARN"/>
+    <logger name="io.qameta.allure"         level="WARN"/>
+    <logger name="com.github.javafaker"     level="WARN"/>
+
+    <!-- ── Root fallback ────────────────────────────────────────────────── -->
+    <root level="WARN">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>

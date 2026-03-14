@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<!--
+  Project W API Test Suite
+  ─────────────────────────────────────────────────────────────────────────────
+  Run the full suite:
+    mvn test
+
+  Run a single test class:
+    mvn test -Dtest=AuthTest
+    mvn test -Dtest=VendorTest
+    mvn test -Dtest=CustomerTest
+    mvn test -Dtest=ProductTest
+    mvn test -Dtest=SalesOrderTest
+    mvn test -Dtest=AttendanceTest
+    mvn test -Dtest=RawMaterialTest
+
+  Run a single test method:
+    mvn test -Dtest="AuthTest#TC_AUTH_01_validLoginReturnsToken"
+
+  Generate Allure report after run:
+    mvn allure:report
+    mvn allure:serve
+-->
+
+<suite name="Project W API Test Suite" verbose="1" parallel="none" thread-count="1">
+
+    <!-- ─── Listeners ─────────────────────────────────────────────────────── -->
+    <listeners>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+        <listener class-name="com.projectw.listeners.ExtentReportListener"/>
+    </listeners>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         SMOKE — fast sanity check (health + login + one vendor read)
+    ════════════════════════════════════════════════════════════════════════ -->
+    <test name="Smoke Tests" enabled="true">
+        <classes>
+            <class name="com.projectw.tests.AuthTest">
+                <methods>
+                    <include name="TC_AUTH_10_healthCheckIsPublic"/>
+                    <include name="TC_AUTH_01_validLoginReturnsToken"/>
+                    <include name="TC_AUTH_06_noTokenReturns401"/>
+                </methods>
+            </class>
+            <class name="com.projectw.tests.VendorTest">
+                <methods>
+                    <include name="TC_VND_01_createVendorSuccess"/>
+                    <include name="TC_VND_03_getAllVendorsReturnsList"/>
+                    <include name="TC_VND_04_getVendorByIdSuccess"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         FULL REGRESSION — all test classes in dependency order
+    ════════════════════════════════════════════════════════════════════════ -->
+
+    <!-- Authentication (no dependencies — always run first) -->
+    <test name="Authentication Tests" enabled="true">
+        <classes>
+            <class name="com.projectw.tests.AuthTest">
+                <methods>
+                    <include name="TC_AUTH_01_validLoginReturnsToken"/>
+                    <include name="TC_AUTH_02_wrongPasswordReturns401"/>
+                    <include name="TC_AUTH_03_unknownEmailReturnsError"/>
+                    <include name="TC_AUTH_04_missingEidReturnsError"/>
+                    <include name="TC_AUTH_05_emptyBodyReturns400"/>
+                    <include name="TC_AUTH_06_noTokenReturns401"/>
+                    <include name="TC_AUTH_07_malformedTokenReturns401"/>
+                    <include name="TC_AUTH_08_tamperedTokenReturns401"/>
+                    <include name="TC_AUTH_09_loginResponseContainsUserData"/>
+                    <include name="TC_AUTH_10_healthCheckIsPublic"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <!-- Vendor CRUD -->
+    <test name="Vendor Tests" enabled="true">
+        <classes>
+            <class name="com.projectw.tests.VendorTest">
+                <methods>
+                    <include name="TC_VND_01_createVendorSuccess"/>
+                    <include name="TC_VND_02_createVendorMissingNameReturns400"/>
+                    <include name="TC_VND_03_getAllVendorsReturnsList"/>
+                    <include name="TC_VND_04_getVendorByIdSuccess"/>
+                    <include name="TC_VND_05_getVendorByInvalidIdReturns400"/>
+                    <include name="TC_VND_06_getVendorByNonExistentIdReturns404"/>
+                    <include name="TC_VND_07_updateVendorSuccess"/>
+                    <include name="TC_VND_08_searchVendorsByName"/>
+                    <include name="TC_VND_09_searchVendorsBySpecialization"/>
+                    <include name="TC_VND_10_getRecommendedVendors"/>
+                    <include name="TC_VND_11_getVendorPerformanceReport"/>
+                    <include name="TC_VND_12_deactivateVendorSuccess"/>
+                    <include name="TC_VND_13_deactivatedVendorExcludedFromActiveList"/>
+                    <include name="TC_VND_14_vendorCodeFollowsExpectedFormat"/>
+                    <include name="TC_VND_15_duplicateVendorNameAllowed"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <!-- Product CRUD -->
+    <test name="Product Tests" enabled="true">
+        <classes>
+            <class name="com.projectw.tests.ProductTest">
+                <methods>
+                    <include name="TC_PRD_01_createProductSuccess"/>
+                    <include name="TC_PRD_02_createProductMissingNameReturnsError"/>
+                    <include name="TC_PRD_03_createProductInvalidCategoryReturnsError"/>
+                    <include name="TC_PRD_04_getAllProductsReturnsList"/>
+                    <include name="TC_PRD_05_getProductByIdSuccess"/>
+                    <include name="TC_PRD_06_getProductByInvalidIdReturns400"/>
+                    <include name="TC_PRD_07_getProductByNonExistentIdReturns404"/>
+                    <include name="TC_PRD_08_updateProductSuccess"/>
+                    <include name="TC_PRD_09_searchProductsByName"/>
+                    <include name="TC_PRD_10_searchProductsByCategory"/>
+                    <include name="TC_PRD_11_searchProductsByPriceRange"/>
+                    <include name="TC_PRD_12_drillProductCodeFormat"/>
+                    <include name="TC_PRD_13_deleteProductSuccess"/>
+                    <include name="TC_PRD_14_getDeletedProductReturns404"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <!-- Raw Material CRUD -->
+    <test name="Raw Material Tests" enabled="true">
+        <classes>
+            <class name="com.projectw.tests.RawMaterialTest"/>
+        </classes>
+    </test>
+
+    <!-- Customer CRUD (see CUSTOMER_MODULE_TEST_COVERAGE.md for full list) -->
+    <test name="Customer Tests" enabled="true">
+        <classes>
+            <class name="com.projectw.tests.CustomerTest"/>
+        </classes>
+    </test>
+
+    <!-- Sales Order Lifecycle (depends on Customer + Product existing) -->
+    <test name="Sales Order Tests" enabled="true">
+        <classes>
+            <class name="com.projectw.tests.SalesOrderTest">
+                <methods>
+                    <include name="TC_SO_01_createSalesOrderDraftSuccess"/>
+                    <include name="TC_SO_02_createSalesOrderMissingCustomerReturnsError"/>
+                    <include name="TC_SO_03_createSalesOrderNoItemsReturnsError"/>
+                    <include name="TC_SO_04_getAllSalesOrdersReturnsList"/>
+                    <include name="TC_SO_05_getSalesOrderByIdSuccess"/>
+                    <include name="TC_SO_06_getSalesOrderByInvalidIdReturns400"/>
+                    <include name="TC_SO_07_getSalesOrderByNonExistentIdReturns404"/>
+                    <include name="TC_SO_08_updateDraftSalesOrderSuccess"/>
+                    <include name="TC_SO_09_submitSalesOrderSuccess"/>
+                    <include name="TC_SO_10_submittedSalesOrderCodeFormat"/>
+                    <include name="TC_SO_11_cannotResubmitSalesOrder"/>
+                    <include name="TC_SO_12_searchSalesOrdersByStatus"/>
+                    <include name="TC_SO_13_getProductionOrdersForSalesOrder"/>
+                    <include name="TC_SO_14_deleteDraftSalesOrderSuccess"/>
+                    <include name="TC_SO_15_cannotDeleteSubmittedSalesOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <!-- Attendance & Workforce Management -->
+    <test name="Attendance Tests" enabled="true">
+        <classes>
+            <class name="com.projectw.tests.AttendanceTest">
+                <methods>
+                    <!-- Section 1: Check-In -->
+                    <include name="AT_CI_001_checkInSuccess"/>
+                    <include name="AT_CI_002_checkInWithMetadata"/>
+                    <include name="AT_CI_003_doubleCheckInReturns400"/>
+                    <include name="AT_CI_004_checkInNoAuthReturns401"/>
+                    <include name="AT_CI_005_checkInMissingTimezoneDefaults"/>
+                    <!-- Section 2: Check-Out -->
+                    <include name="AT_CO_001_checkOutSuccess"/>
+                    <include name="AT_CO_002_checkOutWithoutCheckInReturns400"/>
+                    <include name="AT_CO_003_checkOutNoAuthReturns401"/>
+                    <!-- Section 3: Break Management -->
+                    <include name="AT_BK_001_startBreakSuccess"/>
+                    <include name="AT_BK_002_doubleBreakStartReturns400"/>
+                    <include name="AT_BK_003_endBreakSuccess"/>
+                    <include name="AT_BK_004_endBreakWithoutActiveBreakReturns400"/>
+                    <include name="AT_BK_005_breakStartNoAuthReturns401"/>
+                    <include name="AT_BK_006_breakEndNoAuthReturns401"/>
+                    <!-- Section 4: Today's Summary -->
+                    <include name="AT_TD_001_getTodaySummaryWhileCheckedIn"/>
+                    <include name="AT_TD_002_getTodaySummaryAfterCheckOut"/>
+                    <include name="AT_TD_003_getTodaySummaryNoAuthReturns401"/>
+                    <!-- Section 5: History -->
+                    <include name="AT_HI_001_getHistoryReturnsList"/>
+                    <include name="AT_HI_002_filterHistoryByDateRange"/>
+                    <include name="AT_HI_003_getHistoryNoAuthReturns401"/>
+                    <!-- Section 6: Settings -->
+                    <include name="AT_ST_001_getSettingsSuccess"/>
+                    <include name="AT_ST_002_updateAutoCheckoutGraceMinutes"/>
+                    <include name="AT_ST_003_updateRequiredDailyHoursMinutes"/>
+                    <include name="AT_ST_004_updateMultipleSettings"/>
+                    <include name="AT_ST_005_getSettingsNoAuthReturns401"/>
+                    <!-- Section 7: Regularization -->
+                    <include name="AT_RG_001_createRegularizationRequest"/>
+                    <include name="AT_RG_002_duplicatePendingRequestReturns400"/>
+                    <include name="AT_RG_003_getRegularizationRequestsList"/>
+                    <include name="AT_RG_004_approveRegularizationRequest"/>
+                    <include name="AT_RG_005_cannotReprocessApprovedRequest"/>
+                    <include name="AT_RG_006_rejectRegularizationRequest"/>
+                    <include name="AT_RG_007_getRegularizationNoAuthReturns401"/>
+                    <!-- Section 8: Admin Operations -->
+                    <include name="AT_AE_001_adminEditCheckInTime"/>
+                    <include name="AT_AE_002_adminEditNonExistentReturnsError"/>
+                    <include name="AT_AC_001_adminCreateAttendance"/>
+                    <include name="AT_AC_003_adminCreateWithoutCheckInReturns400"/>
+                    <include name="AT_AA_001_approveAttendance"/>
+                    <!-- Section 9: Geofence Management -->
+                    <include name="AT_GF_001_createCircularGeofence"/>
+                    <include name="AT_GF_002_createPolygonGeofence"/>
+                    <include name="AT_GF_003_getAllGeofencesReturnsList"/>
+                    <include name="AT_GF_004_getGeofenceByIdSuccess"/>
+                    <include name="AT_GF_005_updateGeofenceRadius"/>
+                    <include name="AT_GF_006_deleteGeofence"/>
+                    <!-- Section 10: End-to-End -->
+                    <include name="AT_E2E_001_fullAttendanceDay"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>
