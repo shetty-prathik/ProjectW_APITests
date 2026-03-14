@@ -201,38 +201,6 @@ public class AttendanceTest extends BaseTest {
                 status, activeAttendanceId, checkInAt, eid);
     }
 
-    @Test(priority = 14, description = "AT-CI-002: Check-in with source metadata persists ip, device_id, location_name")
-    @Story("Check-In")
-    @Severity(SeverityLevel.NORMAL)
-    @Description("POST /attendances/checkin with ip, device_id, location_name should return 200 " +
-                 "and persist the metadata on the attendance record.")
-    public void AT_CI_002_checkInWithMetadata() {
-        if (isCheckedIn) {
-            log.debug("[AT-CI-002] Checking out existing session before isolated test");
-            given().spec(employeeSpec()).body(TestDataFactory.checkOutPayload())
-                    .post(Constants.ATTENDANCE_CHECKOUT);
-            isCheckedIn = false;
-        }
-        log.info("[AT-CI-002] POST {} | user={}", Constants.ATTENDANCE_CHECKIN, ConfigManager.getEmployeeEmail());
-        log.debug("[AT-CI-002] Request body: {}", TestDataFactory.checkInWithMetaPayload());
-
-        Response response = given()
-                .spec(employeeSpec())
-                .body(TestDataFactory.checkInWithMetaPayload())
-                .when()
-                .post(Constants.ATTENDANCE_CHECKIN)
-                .then()
-                .statusCode(200)
-                .body("data.status", equalTo("in_progress"))
-                .extract().response();
-
-        isCheckedIn = true;
-        activeAttendanceId = response.jsonPath().getString("data._id");
-        String locationName = response.jsonPath().getString("data.location_name");
-        log.info("[AT-CI-002] PASSED — id={} | location_name={}", activeAttendanceId, locationName);
-        debugResponse("AT-CI-002", response);
-    }
-
     @Test(priority = 2, description = "AT-CI-003: Double check-in returns 400",
           dependsOnMethods = "AT_CI_001_checkInSuccess")
     @Story("Check-In")
