@@ -114,6 +114,20 @@ mvn allure:report        # generates target/site/allure-maven-plugin/index.html
 mvn allure:serve         # opens report in browser
 ```
 
+### Run full suite (testng.xml)
+```bash
+mvn test -Psuite
+```
+
+---
+
+## CI/CD
+
+- **Jenkins**: Use the root **`Jenkinsfile`**. Set env vars `BASE_URL`, `ADMIN_PASSWORD`, `EMPLOYEE_PASSWORD` (or bind Jenkins Credentials) so tests run against your API.
+- **GitHub Actions**: Use **`.github/workflows/api-tests.yml`**. Add repository secrets `TEST_ADMIN_PASSWORD`, `TEST_EMPLOYEE_PASSWORD`, and optionally `BASE_URL`.
+- **Jenkins as MCP server**: Install the [MCP Server plugin](https://plugins.jenkins.io/mcp-server/) on Jenkins and connect Cursor so you can trigger builds and check status from the IDE. See **[docs/Jenkins-MCP.md](docs/Jenkins-MCP.md)**.
+- Full setup (secrets, overrides, artifacts): see **[docs/CI.md](docs/CI.md)**.
+
 ---
 
 ## Test Cases

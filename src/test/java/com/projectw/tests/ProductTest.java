@@ -206,7 +206,46 @@ public class ProductTest extends BaseTest {
         log.info("C03 PASSED");
     }
 
-    @Test(priority = 13, description = "C07: Create with unsupported category returns 409")
+    @Test(priority = 13, description = "C04: Create with missing name returns 400 or 409")
+    @Story("Create Product")
+    @Severity(SeverityLevel.CRITICAL)
+    public void C04_createMissingNameReturnsError() {
+        Map<String, Object> payload = Map.of("category", "drills");
+        given().spec(authSpec()).body(payload)
+                .when().post(Constants.PRODUCTS)
+                .then().statusCode(anyOf(equalTo(400), equalTo(409)));
+        log.info("C04 PASSED");
+    }
+
+    @Test(priority = 14, description = "C05: Create with empty category returns 409")
+    @Story("Create Product")
+    @Severity(SeverityLevel.NORMAL)
+    public void C05_createEmptyCategoryReturns409() {
+        Map<String, Object> payload = Map.of("category", "", "name", "Test Product");
+        given().spec(authSpec()).body(payload)
+                .when().post(Constants.PRODUCTS)
+                .then().statusCode(anyOf(equalTo(400), equalTo(409)));
+        log.info("C05 PASSED");
+    }
+
+    @Test(priority = 15, description = "C06: Create with optional fields (drawingCode, length, price)")
+    @Story("Create Product")
+    @Severity(SeverityLevel.NORMAL)
+    public void C06_createWithOptionalFields() {
+        Map<String, Object> payload = TestDataFactory.productMinimalPayload();
+        payload.put("drawingCode", "DR-DRAW-001");
+        payload.put("length", 120);
+        payload.put("price", 250);
+        given().spec(authSpec()).body(payload)
+                .when().post(Constants.PRODUCTS)
+                .then().statusCode(anyOf(equalTo(200), equalTo(201)))
+                .body("data._id", notNullValue())
+                .body("data.length", equalTo(120))
+                .body("data.price", equalTo(250));
+        log.info("C06 PASSED");
+    }
+
+    @Test(priority = 16, description = "C07: Create with unsupported category returns 409")
     @Story("Create Product")
     @Severity(SeverityLevel.CRITICAL)
     public void C07_createUnsupportedCategoryReturns409() {
@@ -217,7 +256,7 @@ public class ProductTest extends BaseTest {
         log.info("C07 PASSED");
     }
 
-    @Test(priority = 14, description = "C08: Create without category (non-service) returns 409")
+    @Test(priority = 17, description = "C08: Create without category (non-service) returns 409")
     @Story("Create Product")
     @Severity(SeverityLevel.CRITICAL)
     public void C08_createWithoutCategoryReturns409() {
@@ -228,7 +267,7 @@ public class ProductTest extends BaseTest {
         log.info("C08 PASSED");
     }
 
-    @Test(priority = 15, description = "C09: Create with invalid raw_materials returns 409")
+    @Test(priority = 18, description = "C09: Create with invalid raw_materials returns 409")
     @Story("Create Product")
     @Severity(SeverityLevel.CRITICAL)
     public void C09_createInvalidRawMaterialsReturns409() {
@@ -240,7 +279,7 @@ public class ProductTest extends BaseTest {
         log.info("C09 PASSED");
     }
 
-    @Test(priority = 16, description = "C10: Create with invalid customer_id returns 409")
+    @Test(priority = 19, description = "C10: Create with invalid customer_id returns 409")
     @Story("Create Product")
     @Severity(SeverityLevel.CRITICAL)
     public void C10_createInvalidCustomerIdReturns409() {
@@ -252,7 +291,7 @@ public class ProductTest extends BaseTest {
         log.info("C10 PASSED");
     }
 
-    @Test(priority = 17, description = "C11: Create with code in body (ignored)")
+    @Test(priority = 20, description = "C11: Create with code in body (ignored)")
     @Story("Create Product")
     @Severity(SeverityLevel.NORMAL)
     public void C11_createWithCodeInBodyIgnored() {
@@ -267,7 +306,19 @@ public class ProductTest extends BaseTest {
         log.info("C11 PASSED — code={}", returnedCode);
     }
 
-    @Test(priority = 18, description = "C13: Create with isPopulateRawmaterial flag")
+    @Test(priority = 21, description = "C12: Create with isPopulateCustomer flag")
+    @Story("Create Product")
+    @Severity(SeverityLevel.MINOR)
+    public void C12_createWithPopulateCustomerFlag() {
+        Map<String, Object> payload = TestDataFactory.productMinimalPayload();
+        payload.put("flags", Map.of("isPopulateCustomer", true));
+        given().spec(authSpec()).body(payload)
+                .when().post(Constants.PRODUCTS)
+                .then().statusCode(anyOf(equalTo(200), equalTo(201)));
+        log.info("C12 PASSED");
+    }
+
+    @Test(priority = 22, description = "C13: Create with isPopulateRawmaterial flag")
     @Story("Create Product")
     @Severity(SeverityLevel.MINOR)
     public void C13_createWithPopulateRawMaterialFlag() {
@@ -279,7 +330,7 @@ public class ProductTest extends BaseTest {
         log.info("C13 PASSED");
     }
 
-    @Test(priority = 19, description = "C14: Create with isPopulateManufacturingStages flag")
+    @Test(priority = 23, description = "C14: Create with isPopulateManufacturingStages flag")
     @Story("Create Product")
     @Severity(SeverityLevel.MINOR)
     public void C14_createWithPopulateManufacturingStagesFlag() {
