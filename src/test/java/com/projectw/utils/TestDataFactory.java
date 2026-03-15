@@ -290,6 +290,7 @@ public class TestDataFactory {
         Map<String, Object> payload = new HashMap<>();
         payload.put("category", "drills");
         payload.put("name", "10mm Drill " + faker.number().digits(3));
+        payload.put("type", "new");
         return payload;
     }
 
@@ -300,7 +301,7 @@ public class TestDataFactory {
         payload.put("name", "12mm 4-Flute End Mill " + faker.number().digits(3));
         payload.put("description", "HSS cobalt end mill");
         payload.put("drawing_code", List.of("EM-001", "EM-001-A"));
-        payload.put("type", "standard");
+        payload.put("type", "new");
         payload.put("coating", "TiN");
         payload.put("material_type", "HSS");
         payload.put("direction", "right");
@@ -326,6 +327,7 @@ public class TestDataFactory {
         Map<String, Object> payload = new HashMap<>();
         payload.put("category", "endmills");
         payload.put("name", "End Mill with Stages " + faker.number().digits(3));
+        payload.put("type", "new");
         payload.put("stages", List.of(
                 Map.of("type", "cutting", "level", 1, "description", "Cut"),
                 Map.of("type", "cnc_grinding", "level", 2, "description", "Finish grinding")
@@ -337,7 +339,7 @@ public class TestDataFactory {
         Map<String, Object> payload = new HashMap<>();
         payload.put("name", "Drill " + faker.number().digits(4));
         payload.put("category", "drills");
-        payload.put("type", "solid_carbide");
+        payload.put("type", "new");
         payload.put("description", "Solid carbide drill for steel");
         payload.put("coating", "TiAlN");
         payload.put("diameter", faker.number().randomDouble(2, 1, 20));
