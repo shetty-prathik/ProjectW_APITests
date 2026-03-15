@@ -435,31 +435,31 @@ public class ProductTest extends BaseTest {
                 .when().get(Constants.PRODUCT_BY_ID)
                 .then().extract().jsonPath().getString("data.code");
         Assert.assertEquals(afterCode, originalCode, "Code should not be updated");
-        log.info("U06 PASSED");
+        log.info("U05 PASSED");
     }
 
-    @Test(priority = 54, description = "U07: Update raw_materials to invalid ids returns 409",
+    @Test(priority = 54, description = "U06: Update raw_materials to invalid ids returns 409",
           dependsOnMethods = "C01_createWithRequiredCategory")
     @Story("Update Product")
     @Severity(SeverityLevel.CRITICAL)
-    public void U07_updateInvalidRawMaterialsReturns409() {
+    public void U06_updateInvalidRawMaterialsReturns409() {
         given().spec(authSpec()).pathParam("id", createdProductId)
                 .body(Map.of("raw_materials", List.of(NON_EXISTENT_ID)))
                 .when().put(Constants.PRODUCT_BY_ID)
                 .then().statusCode(409);
-        log.info("U07 PASSED");
+        log.info("U06 PASSED");
     }
 
-    @Test(priority = 55, description = "U08: Update customer_id to invalid returns 409",
+    @Test(priority = 55, description = "U07: Update customer_id to invalid returns 409",
           dependsOnMethods = "C01_createWithRequiredCategory")
     @Story("Update Product")
     @Severity(SeverityLevel.CRITICAL)
-    public void U08_updateInvalidCustomerIdReturns409() {
+    public void U07_updateInvalidCustomerIdReturns409() {
         given().spec(authSpec()).pathParam("id", createdProductId)
                 .body(Map.of("customer_id", NON_EXISTENT_ID))
                 .when().put(Constants.PRODUCT_BY_ID)
                 .then().statusCode(409);
-        log.info("U08 PASSED");
+        log.info("U07 PASSED");
     }
 
     // ═══════════════════════════════════════════════════════════════════════════
@@ -467,7 +467,7 @@ public class ProductTest extends BaseTest {
     // ═══════════════════════════════════════════════════════════════════════════
 
     @Test(priority = 60, description = "D01: Valid ObjectId, product exists",
-          dependsOnMethods = "U08_updateInvalidCustomerIdReturns409")
+          dependsOnMethods = "U07_updateInvalidCustomerIdReturns409")
     @Story("Delete Product")
     @Severity(SeverityLevel.CRITICAL)
     public void D01_deleteProductSuccess() {
