@@ -103,27 +103,10 @@
         </classes>
     </test>
 
-    <!-- Product CRUD -->
+    <!-- Product CRUD (Products API – Automatable Test Cases: AUTH, C01–C14, L01–L07, G01–G05, U01–U08, D01–D04, S01–S17, DS01–DS04, DD01–DD06) -->
     <test name="Product Tests" enabled="true">
         <classes>
-            <class name="com.projectw.tests.ProductTest">
-                <methods>
-                    <include name="TC_PRD_01_createProductSuccess"/>
-                    <include name="TC_PRD_02_createProductMissingNameReturnsError"/>
-                    <include name="TC_PRD_03_createProductInvalidCategoryReturnsError"/>
-                    <include name="TC_PRD_04_getAllProductsReturnsList"/>
-                    <include name="TC_PRD_05_getProductByIdSuccess"/>
-                    <include name="TC_PRD_06_getProductByInvalidIdReturns400"/>
-                    <include name="TC_PRD_07_getProductByNonExistentIdReturns404"/>
-                    <include name="TC_PRD_08_updateProductSuccess"/>
-                    <include name="TC_PRD_09_searchProductsByName"/>
-                    <include name="TC_PRD_10_searchProductsByCategory"/>
-                    <include name="TC_PRD_11_searchProductsByPriceRange"/>
-                    <include name="TC_PRD_12_drillProductCodeFormat"/>
-                    <include name="TC_PRD_13_deleteProductSuccess"/>
-                    <include name="TC_PRD_14_getDeletedProductReturns404"/>
-                </methods>
-            </class>
+            <class name="com.projectw.tests.ProductTest"/>
         </classes>
     </test>
 
