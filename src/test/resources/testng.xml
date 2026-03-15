@@ -5,7 +5,7 @@
   Project W API Test Suite
   ─────────────────────────────────────────────────────────────────────────────
   Run the full suite:
-    mvn test
+    mvn test -Psuite
 
   Run a single test class:
     mvn test -Dtest=AuthTest

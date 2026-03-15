@@ -125,6 +125,9 @@ public final class Constants {
     // ── Health ────────────────────────────────────────────────────────────────
     public static final String HEALTH           = "/health";
 
+    /** Valid 24-char hex ObjectId that does not exist in DB; use for 404 tests. */
+    public static final String NON_EXISTENT_OBJECT_ID = "000000000000000000000001";
+
     // ── HTTP Headers ─────────────────────────────────────────────────────────
     public static final String HEADER_AUTHORIZATION = "Authorization";
     public static final String BEARER_PREFIX        = "Bearer ";

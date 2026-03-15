@@ -46,7 +46,6 @@ public class ProductTest extends BaseTest {
     private String createdRawMaterialId;
     private String createdCustomerId;
     private File validPngFile;
-    private static final String NON_EXISTENT_ID = "000000000000000000000001";
 
     @BeforeClass(alwaysRun = true)
     public void setup() throws IOException {
@@ -63,6 +62,25 @@ public class ProductTest extends BaseTest {
     public void cleanup() {
         if (validPngFile != null && validPngFile.exists()) {
             validPngFile.delete();
+        }
+        // Clean up entities created by tests to avoid leaving data on partial runs
+        if (createdProductId != null) {
+            deleteProduct(createdProductId);
+            createdProductId = null;
+        }
+        if (createdCustomerId != null) {
+            try {
+                given().spec(authSpec()).pathParam("id", createdCustomerId)
+                        .when().delete(Constants.CUSTOMER_BY_ID);
+            } catch (Exception ignored) {}
+            createdCustomerId = null;
+        }
+        if (createdRawMaterialId != null) {
+            try {
+                given().spec(authSpec()).pathParam("id", createdRawMaterialId)
+                        .when().delete(Constants.RAW_MATERIAL_BY_ID);
+            } catch (Exception ignored) {}
+            createdRawMaterialId = null;
         }
         log.info("ProductTest cleanup complete");
     }
@@ -215,7 +233,7 @@ public class ProductTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     public void C09_createInvalidRawMaterialsReturns409() {
         Map<String, Object> payload = TestDataFactory.productMinimalPayload();
-        payload.put("raw_materials", List.of(NON_EXISTENT_ID));
+        payload.put("raw_materials", List.of(Constants.NON_EXISTENT_OBJECT_ID));
         given().spec(authSpec()).body(payload)
                 .when().post(Constants.PRODUCTS)
                 .then().statusCode(409);
@@ -227,7 +245,7 @@ public class ProductTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     public void C10_createInvalidCustomerIdReturns409() {
         Map<String, Object> payload = TestDataFactory.productMinimalPayload();
-        payload.put("customer_id", NON_EXISTENT_ID);
+        payload.put("customer_id", Constants.NON_EXISTENT_OBJECT_ID);
         given().spec(authSpec()).body(payload)
                 .when().post(Constants.PRODUCTS)
                 .then().statusCode(409);
@@ -349,7 +367,7 @@ public class ProductTest extends BaseTest {
     @Story("Get Product")
     @Severity(SeverityLevel.CRITICAL)
     public void G02_getByIdNotFoundReturns404() {
-        given().spec(authSpec()).pathParam("id", NON_EXISTENT_ID)
+        given().spec(authSpec()).pathParam("id", Constants.NON_EXISTENT_OBJECT_ID)
                 .when().get(Constants.PRODUCT_BY_ID)
                 .then().statusCode(404).body("message", containsStringIgnoringCase("not found"));
         log.info("G02 PASSED");
@@ -410,7 +428,7 @@ public class ProductTest extends BaseTest {
     @Story("Update Product")
     @Severity(SeverityLevel.NORMAL)
     public void U05_updateNotFoundReturns404() {
-        given().spec(authSpec()).pathParam("id", NON_EXISTENT_ID)
+        given().spec(authSpec()).pathParam("id", Constants.NON_EXISTENT_OBJECT_ID)
                 .body(Map.of("name", "X"))
                 .when().put(Constants.PRODUCT_BY_ID)
                 .then().statusCode(404);
@@ -444,7 +462,7 @@ public class ProductTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     public void U06_updateInvalidRawMaterialsReturns409() {
         given().spec(authSpec()).pathParam("id", createdProductId)
-                .body(Map.of("raw_materials", List.of(NON_EXISTENT_ID)))
+                .body(Map.of("raw_materials", List.of(Constants.NON_EXISTENT_OBJECT_ID)))
                 .when().put(Constants.PRODUCT_BY_ID)
                 .then().statusCode(409);
         log.info("U06 PASSED");
@@ -456,7 +474,7 @@ public class ProductTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     public void U07_updateInvalidCustomerIdReturns409() {
         given().spec(authSpec()).pathParam("id", createdProductId)
-                .body(Map.of("customer_id", NON_EXISTENT_ID))
+                .body(Map.of("customer_id", Constants.NON_EXISTENT_OBJECT_ID))
                 .when().put(Constants.PRODUCT_BY_ID)
                 .then().statusCode(409);
         log.info("U07 PASSED");
@@ -481,7 +499,7 @@ public class ProductTest extends BaseTest {
     @Story("Delete Product")
     @Severity(SeverityLevel.NORMAL)
     public void D02_deleteNotFoundReturns404() {
-        given().spec(authSpec()).pathParam("id", NON_EXISTENT_ID)
+        given().spec(authSpec()).pathParam("id", Constants.NON_EXISTENT_OBJECT_ID)
                 .when().delete(Constants.PRODUCT_BY_ID)
                 .then().statusCode(404);
         log.info("D02 PASSED");
@@ -641,7 +659,7 @@ public class ProductTest extends BaseTest {
     @Story("Design Upload")
     @Severity(SeverityLevel.NORMAL)
     public void DS04_uploadDesignNotFoundReturns404() {
-        given().spec(authSpecForMultipart()).pathParam("id", NON_EXISTENT_ID)
+        given().spec(authSpecForMultipart()).pathParam("id", Constants.NON_EXISTENT_OBJECT_ID)
                 .multiPart("file", validPngFile, "image/png")
                 .when().post(Constants.PRODUCT_DESIGN)
                 .then().statusCode(404);
@@ -724,7 +742,7 @@ public class ProductTest extends BaseTest {
     @Story("Design Delete")
     @Severity(SeverityLevel.NORMAL)
     public void DD04_deleteDesignNotFoundReturns404() {
-        given().spec(authSpec()).pathParam("id", NON_EXISTENT_ID)
+        given().spec(authSpec()).pathParam("id", Constants.NON_EXISTENT_OBJECT_ID)
                 .when().delete(Constants.PRODUCT_DESIGN)
                 .then().statusCode(404);
         log.info("DD04 PASSED");

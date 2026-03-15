@@ -73,6 +73,8 @@ public abstract class BaseTest {
         RestAssured.baseURI  = ConfigManager.getBaseUrl();
         RestAssured.basePath = ConfigManager.getApiBasePath();
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(LogDetail.ALL);
+        // Timeouts (connection.timeout, read.timeout) are in config.properties for reference;
+        // apply per-request if needed via requestSpec().config() with HttpClientConfig for your RestAssured version.
 
         log.info("RestAssured configured: baseURI={}{}", ConfigManager.getBaseUrl(),
                 ConfigManager.getApiBasePath());
